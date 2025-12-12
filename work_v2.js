@@ -233,7 +233,7 @@ async function isAdminAuthenticated(request, env) {
         const id = url.pathname.split('/').pop(); // 获取最后一个路径段，作为 id (例如 /api/config/1)
         try {
             // 🔥 新增：一键获取favicon API
-if (path === '/api/favicon' && method === 'GET') {
+            if (path === '/favicon' && method === 'GET') {
   const siteUrl = url.searchParams.get('url');
   if (!siteUrl) {
 	return this.errorResponse('URL parameter is required', 400);
@@ -867,14 +867,22 @@ async exportConfig(request, env, ctx) {
       
           <!-- [优化] 添加区域HTML结构，并新增排序输入框 -->
           <div class="add-new">
-            <input type="text" id="addName" placeholder="Name" required>
-            <input type="text" id="addUrl" placeholder="URL" required>
-            <input type="text" id="addLogo" placeholder="Logo(optional)">
-            <input type="text" id="addDesc" placeholder="Description(optional)">
-            <input type="text" id="addCatelog" placeholder="Catelog" required>
-            <input type="number" id="addSortOrder" placeholder="排序 (数字小靠前)">
-            <button id="addBtn">添加</button>
-          </div>
+  <input type="text" id="addName" placeholder="Name" required>
+  <input type="text" id="addUrl" placeholder="URL" required>
+  
+  <!-- 🔥 Logo输入框 + 获取按钮 -->
+  <div style="flex: 1 1 150px; min-width: 150px; display: flex; flex-direction: column;">
+    <input type="text" id="addLogo" placeholder="Logo(optional)">
+    <button type="button" id="fetchAdminFaviconBtn" style="margin-top: 4px; padding: 6px 8px; font-size: 0.8rem; background: #6c63ff; color: white; border: none; border-radius: 4px; cursor: pointer;">获取图标</button>
+  </div>
+  
+  <input type="text" id="addDesc" placeholder="Description(optional)">
+  <input type="text" id="addCatelog" placeholder="Catelog" required>
+  <input type="number" id="addSortOrder" placeholder="排序 (数字小靠前)">
+  <button id="addBtn">添加</button>
+</div>
+<div id="adminFaviconStatus" style="display: none; padding: 0.5rem; border-radius: 0.25rem; margin-bottom: 1rem; font-size: 0.85rem;"></div>
+
           <div id="message" style="display: none;padding:1rem;border-radius: 0.5rem;margin-bottom: 1rem;"></div>
          <div class="tab-wrapper">
               <div class="tab-buttons">
@@ -1300,6 +1308,38 @@ async exportConfig(request, env, ctx) {
     .error {
         background-color: #dc3545;
         color: #fff;
+    }
+
+    /* 🔥 新增：后台favicon状态样式 */
+    #adminFaviconStatus {
+      transition: all 0.3s ease;
+    }
+    .status-loading {
+      background-color: #fff3cd !important;
+      color: #856404 !important;
+      border: 1px solid #ffeaa7 !important;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+    .status-success {
+      background-color: #d4edda !important;
+      color: #155724 !important;
+      border: 1px solid #c3e6cb !important;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+    .status-error {
+      background-color: #f8d7da !important;
+      color: #721c24 !important;
+      border: 1px solid #f5c6cb !important;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
     }
       `,
           'admin.js': `
@@ -1779,7 +1819,74 @@ async exportConfig(request, env, ctx) {
               fetchConfigs(currentPage + 1);
             }
           });
-          
+          // 🔥 后台手动获取favicon功能
+const fetchAdminFaviconBtn = document.getElementById('fetchAdminFaviconBtn');
+const adminFaviconStatus = document.getElementById('adminFaviconStatus');
+if (fetchAdminFaviconBtn) {
+  fetchAdminFaviconBtn.addEventListener('click', function() {
+    const addUrl = document.getElementById('addUrl');
+    const addLogo = document.getElementById('addLogo');
+    const btn = fetchAdminFaviconBtn;
+    
+    const siteUrl = addUrl.value.trim();
+    if (!siteUrl) {
+      showMessage('请先输入URL', 'error');
+      return;
+    }
+    
+    // 显示加载状态
+    btn.disabled = true;
+    btn.textContent = '获取中...';
+    btn.style.background = '#999';
+    if (adminFaviconStatus) {
+      adminFaviconStatus.style.display = 'block';
+      adminFaviconStatus.textContent = '正在获取网站图标...';
+      adminFaviconStatus.className = 'status-loading';
+    }
+    
+    fetch('/api/favicon?url=' + encodeURIComponent(siteUrl))
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+        return response.json();
+      })
+      .then(function(data) {
+        console.log('Admin Favicon API响应:', data);
+        if (data.code === 200 && data.favicon) {
+          addLogo.value = data.favicon;
+          if (adminFaviconStatus) {
+            adminFaviconStatus.textContent = '✅ 图标获取成功！';
+            adminFaviconStatus.className = 'status-success';
+          }
+        } else {
+          if (adminFaviconStatus) {
+            adminFaviconStatus.textContent = '未找到合适的图标';
+            adminFaviconStatus.className = 'status-error';
+          }
+        }
+      })
+      .catch(function(error) {
+        console.error('获取favicon失败:', error);
+        if (adminFaviconStatus) {
+          adminFaviconStatus.textContent = '网络错误，请重试';
+          adminFaviconStatus.className = 'status-error';
+        }
+      })
+      .finally(function() {
+        // 恢复按钮状态
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.textContent = '获取图标';
+          btn.style.background = '#6c63ff';
+          if (adminFaviconStatus) {
+            adminFaviconStatus.style.display = 'none';
+          }
+        }, 2000);
+      });
+  });
+}
+
           addBtn.addEventListener('click', () => {
             const name = addName.value;
             const url = addUrl.value;
@@ -2676,9 +2783,18 @@ async exportConfig(request, env, ctx) {
               </div>
               
               <div>
-                <label for="addSiteLogo" class="block text-sm font-medium text-gray-700">Logo (可选)</label>
-                <input type="text" id="addSiteLogo" class="mt-1 block w-full px-3 py-2 border border-primary-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400">
-              </div>
+  <label for="addSiteLogo" class="block text-sm font-medium text-gray-700">Logo (可选)</label>
+  <input type="text" id="addSiteLogo" class="mt-1 block w-full px-3 py-2 border border-primary-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400">
+  <!-- 🔥 新增：手动获取favicon按钮 -->
+  <button type="button" id="fetchFaviconBtn" class="mt-2 w-full flex items-center justify-center px-4 py-2 bg-primary-500 text-white rounded-md text-sm font-medium hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+    <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    自动获取图标
+  </button>
+  <div id="faviconStatus" class="mt-1 text-xs text-gray-500 hidden"></div>
+</div>
+
               
               <div>
                 <label for="addSiteDesc" class="block text-sm font-medium text-gray-700">描述 (可选)</label>
@@ -2845,7 +2961,75 @@ async exportConfig(request, env, ctx) {
               }
             });
           }
-          
+          // 🔥 新增：手动获取favicon功能
+const fetchFaviconBtn = document.getElementById('fetchFaviconBtn');
+const faviconStatus = document.getElementById('faviconStatus');
+if (fetchFaviconBtn) {
+  fetchFaviconBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const urlInput = document.getElementById('addSiteUrl');
+    const logoInput = document.getElementById('addSiteLogo');
+    const btn = fetchFaviconBtn;
+    
+    const siteUrl = urlInput.value.trim();
+    if (!siteUrl) {
+      alert('请先输入网址');
+      return;
+    }
+    
+    // 显示加载状态
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>获取中...';
+    if (faviconStatus) {
+      faviconStatus.classList.remove('hidden');
+      faviconStatus.textContent = '正在获取网站图标...';
+      faviconStatus.className = 'mt-1 text-xs text-gray-500';
+    }
+    
+    // 调用后端API（对接原有的getFavicon功能）
+    fetch('/api/favicon?url=' + encodeURIComponent(siteUrl))
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+        return response.json();
+      })
+      .then(function(data) {
+        console.log('Favicon API响应:', data);
+        if (data.code === 200 && data.favicon) {
+          logoInput.value = data.favicon;
+          if (faviconStatus) {
+            faviconStatus.textContent = '✅ 图标获取成功！';
+            faviconStatus.className = 'mt-1 text-xs text-green-600';
+          }
+        } else {
+          if (faviconStatus) {
+            faviconStatus.textContent = '未找到合适的图标';
+            faviconStatus.className = 'mt-1 text-xs text-red-500';
+          }
+        }
+      })
+      .catch(function(error) {
+        console.error('获取favicon失败:', error);
+        if (faviconStatus) {
+          faviconStatus.textContent = '网络错误，请重试';
+          faviconStatus.className = 'mt-1 text-xs text-red-500';
+        }
+      })
+      .finally(function() {
+        // 恢复按钮状态
+        setTimeout(function() {
+          btn.disabled = false;
+          btn.innerHTML = '<svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>自动获取图标';
+          if (faviconStatus) {
+            faviconStatus.classList.add('hidden');
+          }
+        }, 2000);
+      });
+  });
+}
+
           // 表单提交处理
           if (addSiteForm) {
             addSiteForm.addEventListener('submit', function(e) {

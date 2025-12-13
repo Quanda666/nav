@@ -263,6 +263,10 @@ async function isAdminAuthenticated(request, env) {
               }
               return await this.submitConfig(request, env, ctx);
            }
+           if (path === "/config/reorder" && method === "POST") {
+              return await this.reorderConfig(request, env, ctx);
+          }
+
            if (path === '/categories' && method === 'GET') {
               if (!(await isAdminAuthenticated(request, env))) {
                   return this.errorResponse('Unauthorized', 401);
@@ -396,7 +400,7 @@ async function isAdminAuthenticated(request, env) {
             const offset = (page - 1) * pageSize;
             try {
                 const { results } = await env.NAV_DB.prepare(`
-                        SELECT * FROM pending_sites ORDER BY create_time DESC LIMIT ? OFFSET ?
+                        SELECT * FROM pending_sites ORDER BY COALESCE(sort_order, 9999), create_time DESC LIMIT ? OFFSET ?
                     `).bind(pageSize, offset).all();
                   const countResult = await env.NAV_DB.prepare(`
                       SELECT COUNT(*) as total FROM pending_sites
@@ -495,7 +499,35 @@ async function isAdminAuthenticated(request, env) {
           }
         },
       
-      
+      async reorderConfig(request, env, ctx) {
+  try {
+    const { order } = await request.json();
+    if (!order || typeof order !== "object") {
+      return this.errorResponse("Invalid order data", 400);
+    }
+    
+    // 确保sort_order字段存在
+    try {
+      await env.NAV_DB.prepare("ALTER TABLE sites ADD COLUMN sort_order INTEGER DEFAULT 9999").run();
+    } catch (e) {}
+    
+    // 更新所有书签的排序
+    const { results } = await env.NAV_DB.prepare("SELECT * FROM sites").all();
+    for (const site of results) {
+      const newOrder = order[site.id] !== undefined ? order[site.id] : 9999;
+      await env.NAV_DB.prepare("UPDATE sites SET sort_order = ? WHERE id = ?")
+        .bind(newOrder, site.id).run();
+    }
+    
+    return new Response(JSON.stringify({
+      code: 200, 
+      message: "排序保存成功"
+    }), { headers: { "Content-Type": "application/json" } });
+  } catch (e) {
+    return this.errorResponse("排序失败: " + e.message, 500);
+  }
+},
+
       async createConfig(request, env, ctx) {
         try {
         const config = await request.json();

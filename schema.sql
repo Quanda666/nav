@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS sites (
   desc TEXT,
   catelog TEXT NOT NULL,
   sort_order INTEGER NOT NULL DEFAULT 9999,
+  hits INTEGER DEFAULT 0,
   create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -26,4 +27,17 @@ CREATE TABLE IF NOT EXISTS pending_sites (
 CREATE TABLE IF NOT EXISTS category_orders (
   catelog TEXT PRIMARY KEY,
   sort_order INTEGER NOT NULL DEFAULT 9999
+);
+
+-- 分类元数据表
+CREATE TABLE IF NOT EXISTS category_metadata (
+  catelog TEXT PRIMARY KEY,
+  icon TEXT,
+  description TEXT
+);
+
+-- 设置表
+CREATE TABLE IF NOT EXISTS settings (
+  key TEXT PRIMARY KEY,
+  value TEXT
 );

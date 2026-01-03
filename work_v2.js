@@ -1,4 +1,3 @@
-// 添加到 worker.js 文件顶部（第1行后）
 const getFavicon = async (url) => {
   if (!url) return '';
   try {

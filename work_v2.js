@@ -2874,7 +2874,6 @@ if (fetchAdminFaviconBtn) {
               const safeDataName = escapeHTML(site.name || '');
               const safeDataCatalog = escapeHTML(site.catelog || '');
               const hasValidUrl = Boolean(normalizedUrl);
-              const siteId = `site-${site.id}`;
               return `
                 <div class="site-card group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden" data-id="${site.id}" data-name="${safeDataName}" data-url="${dataUrlAttr}" data-catalog="${safeDataCatalog}">
                   <div class="p-5">
@@ -2884,7 +2883,7 @@ if (fetchAdminFaviconBtn) {
                         <input type="checkbox" class="site-checkbox w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500" data-id="${site.id}">
                       </div>
 
-                      <a href="${hrefValue}" ${hasValidUrl ? 'target="_blank" rel="noopener noreferrer"' : ''} class="flex-1 block" data-site-link="${siteId}">
+                      <a href="${hrefValue}" ${hasValidUrl ? 'target="_blank" rel="noopener noreferrer"' : ''} class="flex-1 block" data-site-link="${site.id}">
                         <div class="flex items-start">
                           <div class="flex-shrink-0 mr-4 relative">
                             ${

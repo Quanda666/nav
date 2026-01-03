@@ -2,27 +2,27 @@
 const getFavicon = async (url) => {
   if (!url) return '';
   try {
-	let domain = new URL(url.startsWith('http') ? url : 'https://' + url).hostname;
-	let faviconUrls = [
-	  `https://www.faviconextractor.com/favicon/${domain}?larger=true`,
-	  `https://favicon.im/${domain}?larger=true`,
-	  `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
-	  `https://${domain}/favicon.ico`,
-	  
-	];
-	
-	for (let faviconUrl of faviconUrls) {
-	  try {
-		let response = await fetch(faviconUrl, { 
-		  cf: { cacheEverything: true },
-		  headers: { 'User-Agent': 'Mozilla/5.0' }
-		});
-		if (response.ok && response.headers.get('content-type')?.startsWith('image/')) {
-		  return faviconUrl;
-		}
-	  } catch (e) { continue; }
-	}
-	return '';
+    let domain = new URL(url.startsWith('http') ? url : 'https://' + url).hostname;
+    let faviconUrls = [
+      `https://www.faviconextractor.com/favicon/${domain}?larger=true`,
+      `https://favicon.im/${domain}?larger=true`,
+      `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+      `https://${domain}/favicon.ico`,
+      
+    ];
+    
+    for (let faviconUrl of faviconUrls) {
+      try {
+        let response = await fetch(faviconUrl, { 
+          cf: { cacheEverything: true },
+          headers: { 'User-Agent': 'Mozilla/5.0' }
+        });
+        if (response.ok && response.headers.get('content-type')?.startsWith('image/')) {
+          return faviconUrl;
+        }
+      } catch (e) { continue; }
+    }
+    return '';
   } catch { return ''; }
 };
 /**
@@ -236,12 +236,12 @@ async function isAdminAuthenticated(request, env) {
             if (path === '/favicon' && method === 'GET') {
   const siteUrl = url.searchParams.get('url');
   if (!siteUrl) {
-	return this.errorResponse('URL parameter is required', 400);
+    return this.errorResponse('URL parameter is required', 400);
   }
   const favicon = await getFavicon(siteUrl);
   return new Response(JSON.stringify({
-	code: 200,
-	favicon: favicon || ''
+    code: 200,
+    favicon: favicon || ''
   }), { headers: { 'Content-Type': 'application/json' } });
 }
             if (path === '/config') {
@@ -536,7 +536,7 @@ async function isAdminAuthenticated(request, env) {
         }
       },
   
-		async updateConfig(request, env, ctx, id) {
+        async updateConfig(request, env, ctx, id) {
           try {
               const config = await request.json();
               //- [新增] 从请求体中获取 sort_order
@@ -1167,7 +1167,7 @@ async exportConfig(request, env, ctx) {
         margin-bottom: 5px;
          transition: border-color 0.2s;
     }
-	   @media (min-width: 768px) {
+       @media (min-width: 768px) {
         .add-new > button {
             flex-basis: auto; /* 在桌面端，按钮恢复自动宽度 */
         }
@@ -1389,7 +1389,7 @@ async exportConfig(request, env, ctx) {
           const addLogo = document.getElementById('addLogo');
           const addDesc = document.getElementById('addDesc');
           const addCatelog = document.getElementById('addCatelog');
-		  const addSortOrder = document.getElementById('addSortOrder'); // [新增] 获取排序输入框
+          const addSortOrder = document.getElementById('addSortOrder'); // [新增] 获取排序输入框
           
           const importBtn = document.getElementById('importBtn');
           const importFile = document.getElementById('importFile');
@@ -1463,7 +1463,7 @@ async exportConfig(request, env, ctx) {
                 <input type="text" id="editDesc"><br>
                 <label for="editCatelog">分类:</label>
                 <input type="text" id="editCatelog" required><br>
-			    <label for="editSortOrder">排序:</label> <!-- [新增] -->
+                <label for="editSortOrder">排序:</label> <!-- [新增] -->
                 <input type="number" id="editSortOrder"><br> <!-- [新增] -->
                 <button type="submit">保存</button>
               </form>
@@ -1570,7 +1570,7 @@ async exportConfig(request, env, ctx) {
                   <td>\${logoCell}</td>
                   <td>\${descCell}</td>
                   <td>\${catelogCell}</td>
-				 <td>\${sortValue}</td> <!-- [新增] 显示排序值 -->
+                 <td>\${sortValue}</td> <!-- [新增] 显示排序值 -->
                   <td class="actions">
                     <button class="edit-btn" data-id="\${config.id}">编辑</button>
                     <button class="del-btn" data-id="\${config.id}">删除</button>
@@ -1893,7 +1893,7 @@ if (fetchAdminFaviconBtn) {
             const logo = addLogo.value;
             const desc = addDesc.value;
              const catelog = addCatelog.value;
-          const sort_order = addSortOrder.value; // [新增]			 
+          const sort_order = addSortOrder.value; // [新增]             
             if(!name ||    !url || !catelog) {
               showMessage('名称,URL,分类 必填', 'error');
               return;
@@ -1922,7 +1922,7 @@ if (fetchAdminFaviconBtn) {
                 addLogo.value = '';
                 addDesc.value = '';
                  addCatelog.value = '';
-        addSortOrder.value = ''; // [新增]				 
+        addSortOrder.value = ''; // [新增]                 
                  fetchConfigs();
              }else {
                 showMessage(data.message, 'error');
@@ -2403,6 +2403,7 @@ if (fetchAdminFaviconBtn) {
       <script src="https://cdn.tailwindcss.com"></script>
       <script>
         tailwind.config = {
+          darkMode: 'class',
           theme: {
             extend: {
               colors: {
@@ -2459,12 +2460,19 @@ if (fetchAdminFaviconBtn) {
           width: 6px;
           height: 6px;
         }
-        ::-webkit-scrollbar-track {
+        .light ::-webkit-scrollbar-track {
           background: #edf1f7;
-          border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-track {
+          background: #1d3552;
+        }
+        .light ::-webkit-scrollbar-thumb {
+          background: #c3d0e3;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+          background: #416d9d;
         }
         ::-webkit-scrollbar-thumb {
-          background: #c3d0e3;
           border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
@@ -2479,6 +2487,9 @@ if (fetchAdminFaviconBtn) {
           transform: translateY(-5px);
           box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+        .dark .site-card:hover {
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
         
         /* 复制成功提示动画 */
         @keyframes fadeInOut {
@@ -2489,6 +2500,129 @@ if (fetchAdminFaviconBtn) {
         }
         .copy-success-animation {
           animation: fadeInOut 2s ease forwards;
+        }
+
+        /* 骨架屏动画 */
+        @keyframes shimmer {
+          0% { background-position: -1000px 0; }
+          100% { background-position: 1000px 0; }
+        }
+        .skeleton {
+          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+          background-size: 1000px 100%;
+          animation: shimmer 2s infinite;
+        }
+        .dark .skeleton {
+          background: linear-gradient(90deg, #2a3f5f 25%, #3a4f6f 50%, #2a3f5f 75%);
+          background-size: 1000px 100%;
+        }
+
+        /* 心跳动画 */
+        @keyframes heartbeat {
+          0%, 100% { transform: scale(1); }
+          25% { transform: scale(1.2); }
+          50% { transform: scale(1); }
+          75% { transform: scale(1.1); }
+        }
+        .heart-beat {
+          animation: heartbeat 0.3s ease-in-out;
+        }
+
+        /* 滑入动画 */
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        .slide-in {
+          animation: slideIn 0.3s ease-out;
+        }
+
+        /* 淡入动画 */
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .fade-in {
+          animation: fadeIn 0.5s ease-out;
+        }
+
+        /* 脉冲动画 */
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        .animate-pulse-slow {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* QR码弹窗 */
+        .qr-modal {
+          backdrop-filter: blur(4px);
+        }
+
+        /* Toast提示 */
+        .toast {
+          animation: slideInRight 0.3s ease-out;
+        }
+        @keyframes slideInRight {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        @keyframes slideOutRight {
+          from {
+            transform: translateX(0);
+            opacity: 1;
+          }
+          to {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+        }
+        .toast.hide {
+          animation: slideOutRight 0.3s ease-out forwards;
+        }
+
+        /* 快捷键提示 */
+        .kbd {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 24px;
+          height: 24px;
+          padding: 0 6px;
+          font-size: 12px;
+          font-weight: 500;
+          line-height: 1;
+          color: #495057;
+          background-color: #f8f9fa;
+          border: 1px solid #dee2e6;
+          border-radius: 4px;
+          box-shadow: 0 2px 0 #dee2e6;
+        }
+        .dark .kbd {
+          color: #e9ecef;
+          background-color: #495057;
+          border-color: #6c757d;
+          box-shadow: 0 2px 0 #6c757d;
+        }
+
+        /* 选中状态 */
+        .site-card.selected {
+          ring: 2px;
+          ring-color: #3c976d;
+          box-shadow: 0 0 0 3px rgba(60, 151, 109, 0.2);
         }
         
         /* 移动端侧边栏 */
@@ -2534,62 +2668,86 @@ if (fetchAdminFaviconBtn) {
         }
       </style>
     </head>
-    <body class="bg-secondary-50 font-sans text-gray-800">
+    <body class="bg-secondary-50 font-sans text-gray-800 transition-colors duration-300">
       <!-- 侧边栏开关 -->
       <input type="checkbox" id="sidebar-toggle" class="hidden">
-      
-      <!-- 移动端导航按钮 -->
-      <div class="fixed top-4 left-4 z-50 lg:hidden">
-        <button id="sidebarToggle" class="p-2 rounded-lg bg-white shadow-md hover:bg-gray-100">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+
+      <!-- 顶部工具栏 -->
+      <div class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
+        <div class="flex items-center justify-between px-4 py-2">
+          <!-- 移动端菜单按钮 -->
+          <button id="sidebarToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          <!-- 侧边栏开关 (桌面端) -->
+          <label for="sidebar-toggle" class="hidden lg:flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </label>
+
+          <!-- 工具按钮组 -->
+          <div class="flex items-center gap-2">
+            <!-- 主题切换按钮 -->
+            <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="切换主题 (T)">
+              <svg id="sunIcon" class="h-5 w-5 text-gray-600 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <svg id="moonIcon" class="h-5 w-5 text-yellow-400 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
+
+            <!-- 收藏列表按钮 -->
+            <button id="favoritesToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative" title="我的收藏 (F)">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              <span id="favoriteCount" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center"></span>
+            </button>
+
+            <!-- 历史记录按钮 -->
+            <button id="historyToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="访问历史 (H)">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+
+            <!-- 帮助按钮 -->
+            <button id="helpToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" title="快捷键帮助 (?)">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
-      
+
       <!-- 移动端遮罩层 - 只在移动端显示 -->
       <div id="mobileOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 mobile-overlay lg:hidden"></div>
       
-      <!-- 桌面侧边栏开关按钮 -->
-      <div class="fixed top-4 left-4 z-50 hidden lg:block">
-        <label for="sidebar-toggle" class="p-2 rounded-lg bg-white shadow-md hover:bg-gray-100 inline-block cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </label>
-      </div>
-      
       <!-- 侧边栏导航 -->
-      <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-md border-r border-primary-100/60 z-50 overflow-y-auto mobile-sidebar lg:transform-none transition-all duration-300">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-8">
-            <h2 class="text-2xl font-bold text-primary-600 tracking-tight">星漫旅站</h2>
-            <button id="closeSidebar" class="p-1 rounded-full hover:bg-gray-100 lg:hidden">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            <label for="sidebar-toggle" class="p-1 rounded-full hover:bg-gray-100 hidden lg:block cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </label>
-          </div>
-          
+      <aside id="sidebar" class="sidebar fixed left-0 top-12 h-[calc(100vh-3rem)] w-64 bg-white dark:bg-gray-800 shadow-lg border-r border-gray-200 dark:border-gray-700 z-40 overflow-y-auto mobile-sidebar lg:transform-none transition-all duration-300">
+        <div class="p-6 pt-4">
+          <h2 class="text-xl font-bold text-primary-600 dark:text-primary-400 tracking-tight mb-6">星漫旅站</h2>
+
           <div class="mb-6">
             <div class="relative">
-              <input id="searchInput" type="text" placeholder="搜索书签..." class="w-full pl-10 pr-4 py-2 border border-primary-100 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition">
+              <input id="searchInput" type="text" placeholder="搜索书签... (/)" class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-400 transition">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
           </div>
-          
+
           <div>
-            <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-3">分类导航</h3>
+            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">分类导航</h3>
             <div class="space-y-1">
-              <a href="?" class="flex items-center px-3 py-2 rounded-lg ${catalogExists ? 'hover:bg-gray-100' : 'bg-secondary-100 text-primary-700'} w-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 ${catalogExists ? 'text-gray-400' : 'text-primary-600'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <a href="?" class="flex items-center px-3 py-2 rounded-lg ${catalogExists ? 'hover:bg-gray-100 dark:hover:bg-gray-700' : 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300'} w-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 ${catalogExists ? 'text-gray-400' : 'text-primary-600 dark:text-primary-400'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
                 全部
@@ -2597,27 +2755,27 @@ if (fetchAdminFaviconBtn) {
               ${catalogLinkMarkup}
             </div>
           </div>
-          
-          <div class="mt-8 pt-6 border-t border-gray-200">
+
+          <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             ${submissionEnabled ? `
-            <button id="addSiteBtnSidebar" class="w-full flex items-center justify-center px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition duration-300">
+            <button id="addSiteBtnSidebar" class="w-full flex items-center justify-center px-4 py-2 bg-accent-500 text-white rounded-lg hover:bg-accent-600 transition duration-300 shadow-sm hover:shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
               添加新书签
             </button>` : `
-            <div class="w-full px-4 py-3 text-xs text-primary-600 bg-white border border-secondary-100 rounded-lg">
+            <div class="w-full px-4 py-3 text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg">
               访客书签提交功能已关闭
             </div>`}
-            
-            <a href="https://blog.110995.xyz/" target="_blank" class="mt-4 flex items-center px-4 py-2 text-gray-600 hover:text-primary-500 transition duration-300">
+
+            <a href="https://blog.110995.xyz/" target="_blank" class="mt-4 flex items-center px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition duration-300">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
               访问博客
             </a>
 
-            <a href="/admin" target="_blank" class="mt-4 flex items-center px-4 py-2 text-gray-600 hover:text-primary-500 transition duration-300">
+            <a href="/admin" target="_blank" class="mt-4 flex items-center px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition duration-300">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
@@ -2626,27 +2784,27 @@ if (fetchAdminFaviconBtn) {
           </div>
         </div>
       </aside>
-      
+
       <!-- 主内容区 -->
-      <main class="main-content lg:ml-64 min-h-screen transition-all duration-300">
+      <main class="main-content lg:ml-64 min-h-screen pt-12 transition-all duration-300 bg-secondary-50 dark:bg-gray-900 transition-colors">
         <!-- 顶部横幅 -->
-        <header class="bg-primary-700 text-white py-10 px-6 md:px-10 border-b border-primary-600 shadow-sm">
+        <header class="bg-gradient-to-r from-primary-700 to-primary-600 dark:from-gray-800 dark:to-gray-700 text-white py-10 px-6 md:px-10 border-b border-gray-200 dark:border-gray-700 shadow-lg">
           <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div class="flex-1 text-center md:text-left">
-              <span class="inline-flex items-center gap-2 rounded-full bg-primary-600/70 px-3 py-1 text-[11px] uppercase tracking-[0.28em] text-secondary-200/80">
+              <span class="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-3 py-1 text-[11px] uppercase tracking-[0.28em] text-white/80">
                 精选 · 真实 · 有温度
               </span>
               <h1 class="mt-4 text-3xl md:text-4xl font-semibold tracking-tight">星漫旅站书签</h1>
-              <p class="mt-3 text-sm md:text-base text-secondary-100/90 leading-relaxed">
+              <p class="mt-3 text-sm md:text-base text-white/80 leading-relaxed">
                 从效率工具到灵感站点，我们亲自挑选、亲手标注，只为帮助你更快找到值得信赖的优质资源。
               </p>
             </div>
             <div class="w-full md:w-auto flex justify-center md:justify-end">
               <div class="rounded-2xl bg-white/10 backdrop-blur-md px-6 py-5 shadow-lg border border-white/10 text-left md:text-right">
-                <p class="text-xs uppercase tracking-[0.28em] text-secondary-100/70">Current Overview</p>
+                <p class="text-xs uppercase tracking-[0.28em] text-white/60">Current Overview</p>
                 <p class="mt-3 text-2xl font-semibold">${totalSites}</p>
-                <p class="text-sm text-secondary-100/85">条书签 · ${catalogs.length} 个分类</p>
-                <p class="mt-2 text-xs text-secondary-100/60">每日人工维护，确保链接状态可用、内容可靠。</p>
+                <p class="text-sm text-white/80">条书签 · ${catalogs.length} 个分类</p>
+                <p class="mt-2 text-xs text-white/60">每日人工维护，确保链接状态可用、内容可靠。</p>
               </div>
             </div>
           </div>
@@ -2656,26 +2814,48 @@ if (fetchAdminFaviconBtn) {
         <section class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <!-- 当前分类/搜索提示 -->
           <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-semibold text-gray-800" data-role="list-heading" data-default="${headingDefaultAttr}" data-active="${headingActiveAttr}">
-              ${headingText}
-            </h2>
-            <div class="text-sm text-gray-500 hidden md:block">
-              <script>
-                 fetch('https://v1.hitokoto.cn')
-                      .then(response => response.json())
-                      .then(data => {
-                       const hitokoto = document.getElementById('hitokoto_text')
-                      hitokoto.href = 'https://hitokoto.cn/?uuid=' + data.uuid
-                      hitokoto.innerText = data.hitokoto
-                      })
-                      .catch(console.error)
-              </script>
-              <div id="hitokoto"><a href="#" target="_blank" id="hitokoto_text">疏影横斜水清浅，暗香浮动月黄昏。</a></div>
+            <div class="flex items-center gap-3">
+              <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100" data-role="list-heading" data-default="${headingDefaultAttr}" data-active="${headingActiveAttr}">
+                ${headingText}
+              </h2>
+              <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300" id="visibleCount">${currentSites.length} 个显示</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <!-- 视图切换 -->
+              <div class="hidden sm:flex items-center bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+                <button id="gridView" class="p-2 rounded-l-lg bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400" title="网格视图">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                </button>
+                <button id="listView" class="p-2 rounded-r-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400" title="列表视图">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </button>
+              </div>
+              <!-- 批量操作栏 -->
+              <div id="batchActions" class="hidden items-center gap-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-1.5 shadow-sm">
+                <span class="text-sm text-gray-600 dark:text-gray-400">已选 <span id="selectedCount">0</span> 项</span>
+                <button id="batchCopy" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">批量复制</button>
+                <span class="text-gray-300 dark:text-gray-600">|</span>
+                <button id="batchExport" class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">导出</button>
+                <span class="text-gray-300 dark:text-gray-600">|</span>
+                <button id="batchClear" class="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300">清空</button>
+              </div>
             </div>
           </div>
-          
+
+          <!-- Hitokoto -->
+          <div class="mb-6 hidden md:flex items-center justify-center p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div class="text-center">
+              <p class="text-gray-600 dark:text-gray-400 text-sm italic" id="hitokotoText">"疏影横斜水清浅，暗香浮动月黄昏。"</p>
+              <a href="https://hitokoto.cn/" target="_blank" class="text-xs text-gray-400 dark:text-gray-500 mt-1 hover:text-primary-500 dark:hover:text-primary-400">— Hitokoto</a>
+            </div>
+          </div>
+
           <!-- 网站卡片网格 -->
-          <div class="rounded-2xl border border-primary-100/60 bg-white/80 backdrop-blur-sm p-4 sm:p-6 shadow-sm">
+          <div class="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm p-4 sm:p-6 shadow-sm">
             <div id="sitesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
               ${currentSites.map((site) => {
               const rawName = site.name || '未命名';
@@ -2694,38 +2874,63 @@ if (fetchAdminFaviconBtn) {
               const safeDataName = escapeHTML(site.name || '');
               const safeDataCatalog = escapeHTML(site.catelog || '');
               const hasValidUrl = Boolean(normalizedUrl);
+              const siteId = `site-${site.id}`;
               return `
-                <div class="site-card group bg-white border border-primary-100/60 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-[2px] transition-all duration-200 overflow-hidden" data-id="${site.id}" data-name="${safeDataName}" data-url="${dataUrlAttr}" data-catalog="${safeDataCatalog}">
+                <div class="site-card group bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden" data-id="${site.id}" data-name="${safeDataName}" data-url="${dataUrlAttr}" data-catalog="${safeDataCatalog}">
                   <div class="p-5">
-                    <a href="${hrefValue}" ${hasValidUrl ? 'target="_blank" rel="noopener noreferrer"' : ''} class="block">
-                      <div class="flex items-start">
-                        <div class="flex-shrink-0 mr-4">
-                          ${
-                            logoUrl
-                              ? `<img src="${escapeHTML(logoUrl)}" alt="${safeName}" class="w-10 h-10 rounded-lg object-cover bg-gray-100">`
-                              : `<div class="w-10 h-10 rounded-lg bg-primary-600 flex items-center justify-center text-white font-semibold text-lg shadow-inner">${cardInitial}</div>`
-                          }
-                        </div>
-                        <div class="flex-1 min-w-0">
-                          <h3 class="text-base font-medium text-gray-900 truncate" title="${safeName}">${safeName}</h3>
-                          <span class="inline-flex items-center px-2 py-0.5 mt-1 rounded-full text-xs font-medium bg-secondary-100 text-primary-700">
-                            ${safeCatalog}
-                          </span>
-                        </div>
+                    <div class="flex items-start">
+                      <!-- 选择框 -->
+                      <div class="flex-shrink-0 pt-1">
+                        <input type="checkbox" class="site-checkbox w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500" data-id="${site.id}">
                       </div>
-                      
-                      <p class="mt-2 text-sm text-gray-600 leading-relaxed line-clamp-2" title="${safeDesc}">${safeDesc}</p>
-                    </a>
-                    
-                    <div class="mt-3 flex items-center justify-between">
-                      <span class="text-xs text-primary-600 truncate max-w-[140px]" title="${safeDisplayUrl}">${safeDisplayUrl}</span>
-                      <button class="copy-btn relative flex items-center px-2 py-1 ${hasValidUrl ? 'bg-accent-100 text-accent-700 hover:bg-accent-200' : 'bg-gray-200 text-gray-400 cursor-not-allowed'} rounded-full text-xs font-medium transition-colors" data-url="${dataUrlAttr}" ${hasValidUrl ? '' : 'disabled'}>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                        </svg>
-                        复制
-                        <span class="copy-success hidden absolute -top-8 right-0 bg-accent-500 text-white text-xs px-2 py-1 rounded shadow-md">已复制!</span>
-                      </button>
+
+                      <a href="${hrefValue}" ${hasValidUrl ? 'target="_blank" rel="noopener noreferrer"' : ''} class="flex-1 block" data-site-link="${siteId}">
+                        <div class="flex items-start">
+                          <div class="flex-shrink-0 mr-4 relative">
+                            ${
+                              logoUrl
+                                ? `<img src="${escapeHTML(logoUrl)}" alt="${safeName}" class="w-12 h-12 rounded-xl object-cover bg-gray-100 dark:bg-gray-700 ring-2 ring-gray-100 dark:ring-gray-700 group-hover:ring-primary-200 dark:group-hover:ring-primary-800 transition-all">`
+                                : `<div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white font-bold text-lg shadow-inner group-hover:shadow-lg transition-all">${cardInitial}</div>`
+                            }
+                          </div>
+                          <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2">
+                              <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors" title="${safeName}">${safeName}</h3>
+                              <!-- 收藏按钮 -->
+                              <button class="favorite-btn flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors" data-id="${site.id}" data-name="${safeName}" data-url="${dataUrlAttr}" title="收藏 (S)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                              </button>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-0.5 mt-1.5 rounded-full text-xs font-medium bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+                              ${safeCatalog}
+                            </span>
+                          </div>
+                        </div>
+
+                        <p class="mt-2.5 text-sm text-gray-600 dark:text-gray-400 leading-relaxed line-clamp-2" title="${safeDesc}">${safeDesc}</p>
+                      </a>
+                    </div>
+
+                    <div class="mt-3 flex items-center justify-between border-t border-gray-100 dark:border-gray-700 pt-3">
+                      <span class="text-xs text-gray-500 dark:text-gray-500 truncate max-w-[140px]" title="${safeDisplayUrl}">${safeDisplayUrl}</span>
+                      <div class="flex items-center gap-1">
+                        <!-- QR码按钮 -->
+                        ${hasValidUrl ? `
+                        <button class="qr-btn p-1.5 rounded-lg text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors" data-url="${dataUrlAttr}" data-name="${safeName}" title="生成二维码 (Q)">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                          </svg>
+                        </button>` : ''}
+
+                        <!-- 复制按钮 -->
+                        <button class="copy-btn relative flex items-center px-2 py-1.5 ${hasValidUrl ? 'text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20' : 'text-gray-300 cursor-not-allowed'} rounded-lg text-xs font-medium transition-colors" data-url="${dataUrlAttr}" ${hasValidUrl ? '' : 'disabled'} title="复制链接 (C)">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2736,11 +2941,11 @@ if (fetchAdminFaviconBtn) {
         </section>
         
         <!-- 页脚 -->
-        <footer class="bg-white py-8 px-6 mt-12 border-t border-primary-100">
+        <footer class="bg-white dark:bg-gray-800 py-8 px-6 mt-12 border-t border-gray-200 dark:border-gray-700">
           <div class="max-w-5xl mx-auto text-center">
-            <p class="text-gray-500">© ${new Date().getFullYear()} 星漫旅站 | 愿你在此找到方向</p>
+            <p class="text-gray-600 dark:text-gray-400">© ${new Date().getFullYear()} 星漫旅站 | 愿你在此找到方向</p>
             <div class="mt-4 flex justify-center space-x-6">
-              <a href="https://page.110995.xyz/" target="_blank" class="text-gray-400 hover:text-primary-500 transition-colors">
+              <a href="https://page.110995.xyz/" target="_blank" class="text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
@@ -2749,13 +2954,126 @@ if (fetchAdminFaviconBtn) {
           </div>
         </footer>
       </main>
-      
+
       <!-- 返回顶部按钮 -->
-      <button id="backToTop" class="fixed bottom-8 right-8 p-3 rounded-full bg-accent-500 text-white shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-accent-600">
+      <button id="backToTop" class="fixed bottom-8 right-8 p-3 rounded-full bg-accent-500 text-white shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-accent-600 z-40">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7" />
         </svg>
       </button>
+
+      <!-- Toast 容器 -->
+      <div id="toastContainer" class="fixed top-20 right-4 z-50 flex flex-col gap-2"></div>
+
+      <!-- 收藏模态框 -->
+      <div id="favoritesModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[80vh] overflow-hidden transform scale-95 transition-all duration-300">
+          <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">我的收藏</h2>
+            <button id="closeFavorites" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div id="favoritesList" class="p-4 overflow-y-auto max-h-[60vh]">
+            <p class="text-center text-gray-500 dark:text-gray-400 py-8">暂无收藏的书签</p>
+          </div>
+          <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+            <button id="clearFavorites" class="w-full py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">清空所有收藏</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 历史记录模态框 -->
+      <div id="historyModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[80vh] overflow-hidden transform scale-95 transition-all duration-300">
+          <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">访问历史</h2>
+            <button id="closeHistory" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div id="historyList" class="p-4 overflow-y-auto max-h-[60vh]">
+            <p class="text-center text-gray-500 dark:text-gray-400 py-8">暂无访问记录</p>
+          </div>
+          <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+            <button id="clearHistory" class="w-full py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">清空历史记录</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR码模态框 -->
+      <div id="qrModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-sm mx-4 transform scale-95 transition-all duration-300 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">二维码</h3>
+            <button id="closeQrModal" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div id="qrCodeContainer" class="flex justify-center mb-4">
+            <div class="w-48 h-48 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+              <svg class="animate-spin h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </div>
+          </div>
+          <p id="qrUrlText" class="text-center text-sm text-gray-600 dark:text-gray-400 break-all mb-4"></p>
+          <button id="downloadQr" class="w-full py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">下载二维码</button>
+        </div>
+      </div>
+
+      <!-- 帮助模态框 -->
+      <div id="helpModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg mx-4 max-h-[80vh] overflow-hidden transform scale-95 transition-all duration-300">
+          <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">快捷键帮助</h2>
+            <button id="closeHelpModal" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="p-6 overflow-y-auto max-h-[60vh]">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span class="text-gray-700 dark:text-gray-300">搜索书签</span>
+                <kbd>/</kbd>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span class="text-gray-700 dark:text-gray-300">切换主题</span>
+                <kbd>T</kbd>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span class="text-gray-700 dark:text-gray-300">我的收藏</span>
+                <kbd>F</kbd>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span class="text-gray-700 dark:text-gray-300">访问历史</span>
+                <kbd>H</kbd>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span class="text-gray-700 dark:text-gray-300">打开帮助</span>
+                <kbd>?</kbd>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                <span class="text-gray-700 dark:text-gray-300">返回顶部</span>
+                <kbd class="flex gap-1"><span>Home</span></kbd>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-gray-700 dark:text-gray-300">关闭模态框</span>
+                <kbd>Esc</kbd>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       
       ${submissionEnabled ? `
       <!-- 添加网站模态框 -->
@@ -2829,23 +3147,27 @@ if (fetchAdminFaviconBtn) {
           const sidebar = document.getElementById('sidebar');
           const mobileOverlay = document.getElementById('mobileOverlay');
           const sidebarToggle = document.getElementById('sidebarToggle');
-          const closeSidebar = document.getElementById('closeSidebar');
-          
+          const sidebarToggleCheckbox = document.getElementById('sidebar-toggle');
+
           function openSidebar() {
             sidebar.classList.add('open');
             mobileOverlay.classList.add('open');
             document.body.style.overflow = 'hidden';
           }
-          
+
           function closeSidebarMenu() {
             sidebar.classList.remove('open');
             mobileOverlay.classList.remove('open');
             document.body.style.overflow = '';
           }
-          
-          if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
-          if (closeSidebar) closeSidebar.addEventListener('click', closeSidebarMenu);
-          if (mobileOverlay) mobileOverlay.addEventListener('click', closeSidebarMenu);
+
+          if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', openSidebar);
+          }
+
+          if (mobileOverlay) {
+            mobileOverlay.addEventListener('click', closeSidebarMenu);
+          }
           
           // 复制链接功能
           document.querySelectorAll('.copy-btn').forEach(btn => {
@@ -3117,6 +3439,535 @@ if (fetchFaviconBtn) {
               }
             });
           }
+
+          // ========== 新增功能 ==========
+
+          // 主题切换功能
+          const themeToggle = document.getElementById('themeToggle');
+          const body = document.body;
+          const savedTheme = localStorage.getItem('theme') || 'light';
+
+          function setTheme(theme) {
+            if (theme === 'dark') {
+              body.classList.add('dark');
+              body.classList.remove('light');
+              localStorage.setItem('theme', 'dark');
+            } else {
+              body.classList.add('light');
+              body.classList.remove('dark');
+              localStorage.setItem('theme', 'light');
+            }
+          }
+          setTheme(savedTheme);
+
+          if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+              const currentTheme = localStorage.getItem('theme') || 'light';
+              setTheme(currentTheme === 'light' ? 'dark' : 'light');
+              showToast('主题已切换', 'success');
+            });
+          }
+
+          // 收藏功能
+          let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+          const favoriteCount = document.getElementById('favoriteCount');
+          const favoritesToggle = document.getElementById('favoritesToggle');
+          const favoritesModal = document.getElementById('favoritesModal');
+          const favoritesList = document.getElementById('favoritesList');
+          const closeFavorites = document.getElementById('closeFavorites');
+          const clearFavorites = document.getElementById('clearFavorites');
+
+          function updateFavoriteCount() {
+            if (favorites.length > 0) {
+              favoriteCount.textContent = favorites.length;
+              favoriteCount.classList.remove('hidden');
+            } else {
+              favoriteCount.classList.add('hidden');
+            }
+          }
+          updateFavoriteCount();
+
+          function updateFavoriteButtons() {
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+              const id = btn.dataset.id;
+              const isFavorite = favorites.some(f => f.id === id);
+              const svg = btn.querySelector('svg');
+              if (isFavorite) {
+                svg.classList.add('fill-red-500', 'text-red-500');
+              } else {
+                svg.classList.remove('fill-red-500', 'text-red-500');
+              }
+            });
+          }
+          updateFavoriteButtons();
+
+          function saveFavorite(id, name, url) {
+            const existing = favorites.find(f => f.id === id);
+            if (existing) {
+              favorites = favorites.filter(f => f.id !== id);
+              showToast('已取消收藏', 'info');
+            } else {
+              favorites.push({ id, name, url, timestamp: Date.now() });
+              showToast('已添加到收藏', 'success');
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateFavoriteCount();
+            updateFavoriteButtons();
+            renderFavorites();
+          }
+
+          function renderFavorites() {
+            if (favorites.length === 0) {
+              favoritesList.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 py-8">暂无收藏的书签</p>';
+              return;
+            }
+            favoritesList.innerHTML = favorites.map(f => `
+              <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mb-2">
+                <a href="${escapeHTML(f.url)}" target="_blank" rel="noopener noreferrer" class="flex-1 truncate">
+                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100">${escapeHTML(f.name)}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 truncate">${escapeHTML(f.url)}</p>
+                </a>
+                <button class="remove-favorite-btn ml-2 text-red-500 hover:text-red-700" data-id="${f.id}" title="移除">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            `).join('');
+
+            // 绑定删除事件
+            favoritesList.querySelectorAll('.remove-favorite-btn').forEach(btn => {
+              btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                favorites = favorites.filter(f => f.id !== id);
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                updateFavoriteCount();
+                updateFavoriteButtons();
+                renderFavorites();
+                showToast('已移除收藏', 'info');
+              });
+            });
+          }
+
+          document.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              const id = this.dataset.id;
+              const name = this.dataset.name;
+              const url = this.dataset.url;
+              saveFavorite(id, name, url);
+              this.querySelector('svg').classList.add('heart-beat');
+              setTimeout(() => {
+                this.querySelector('svg').classList.remove('heart-beat');
+              }, 300);
+            });
+          });
+
+          function openFavoritesModal() {
+            favoritesModal.classList.remove('opacity-0', 'invisible');
+            favoritesModal.querySelector('.transform').classList.remove('scale-95');
+            document.body.style.overflow = 'hidden';
+            renderFavorites();
+          }
+
+          function closeFavoritesModal() {
+            favoritesModal.classList.add('opacity-0', 'invisible');
+            favoritesModal.querySelector('.transform').classList.add('scale-95');
+            document.body.style.overflow = '';
+          }
+
+          if (favoritesToggle) favoritesToggle.addEventListener('click', openFavoritesModal);
+          if (closeFavorites) closeFavorites.addEventListener('click', closeFavoritesModal);
+          if (favoritesModal) favoritesModal.addEventListener('click', function(e) {
+            if (e.target === favoritesModal) closeFavoritesModal();
+          });
+          if (clearFavorites) clearFavorites.addEventListener('click', function() {
+            if (confirm('确定清空所有收藏吗？')) {
+              favorites = [];
+              localStorage.setItem('favorites', JSON.stringify(favorites));
+              updateFavoriteCount();
+              updateFavoriteButtons();
+              renderFavorites();
+              showToast('已清空所有收藏', 'info');
+            }
+          });
+
+          // 历史记录功能
+          let history = JSON.parse(localStorage.getItem('visitHistory') || '[]');
+          const historyToggle = document.getElementById('historyToggle');
+          const historyModal = document.getElementById('historyModal');
+          const historyList = document.getElementById('historyList');
+          const closeHistory = document.getElementById('closeHistory');
+          const clearHistory = document.getElementById('clearHistory');
+
+          function addToHistory(id, name, url) {
+            history = history.filter(h => h.id !== id);
+            history.unshift({ id, name, url, timestamp: Date.now() });
+            history = history.slice(0, 50);
+            localStorage.setItem('visitHistory', JSON.stringify(history));
+          }
+
+          function renderHistory() {
+            if (history.length === 0) {
+              historyList.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 py-8">暂无访问记录</p>';
+              return;
+            }
+            historyList.innerHTML = history.map(h => {
+              const date = new Date(h.timestamp).toLocaleString('zh-CN');
+              return `
+                <div class="flex items-start p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mb-2">
+                  <a href="${escapeHTML(h.url)}" target="_blank" rel="noopener noreferrer" class="flex-1" data-history-link="${h.id}">
+                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">${escapeHTML(h.name)}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate mb-1">${escapeHTML(h.url)}</p>
+                    <p class="text-xs text-gray-400">${date}</p>
+                  </a>
+                </div>
+              `;
+            }).join('');
+          }
+
+          function openHistoryModal() {
+            historyModal.classList.remove('opacity-0', 'invisible');
+            historyModal.querySelector('.transform').classList.remove('scale-95');
+            document.body.style.overflow = 'hidden';
+            renderHistory();
+          }
+
+          function closeHistoryModal() {
+            historyModal.classList.add('opacity-0', 'invisible');
+            historyModal.querySelector('.transform').classList.add('scale-95');
+            document.body.style.overflow = '';
+          }
+
+          if (historyToggle) historyToggle.addEventListener('click', openHistoryModal);
+          if (closeHistory) closeHistory.addEventListener('click', closeHistoryModal);
+          if (historyModal) historyModal.addEventListener('click', function(e) {
+            if (e.target === historyModal) closeHistoryModal();
+          });
+          if (clearHistory) clearHistory.addEventListener('click', function() {
+            if (confirm('确定清空所有历史记录吗？')) {
+              history = [];
+              localStorage.setItem('visitHistory', JSON.stringify(history));
+              renderHistory();
+              showToast('已清空历史记录', 'info');
+            }
+          });
+
+          // 记录点击历史
+          document.querySelectorAll('[data-site-link]').forEach(link => {
+            link.addEventListener('click', function() {
+              const card = this.closest('.site-card');
+              const id = card.dataset.id;
+              const name = card.dataset.name;
+              const url = card.dataset.url;
+              if (url) {
+                addToHistory(id, name, url);
+              }
+            });
+          });
+
+          // QR码功能
+          const qrModal = document.getElementById('qrModal');
+          const qrCodeContainer = document.getElementById('qrCodeContainer');
+          const qrUrlText = document.getElementById('qrUrlText');
+          const closeQrModal = document.getElementById('closeQrModal');
+          const downloadQr = document.getElementById('downloadQr');
+          let currentQrUrl = '';
+
+          function openQrModal(url, name) {
+            currentQrUrl = url;
+            qrUrlText.textContent = url;
+            qrCodeContainer.innerHTML = '<div class="w-48 h-48 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center"><svg class="animate-spin h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>';
+            qrModal.classList.remove('opacity-0', 'invisible');
+            qrModal.querySelector('.transform').classList.remove('scale-95');
+            document.body.style.overflow = 'hidden';
+
+            // 使用 QR Server API 生成二维码
+            const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+            const img = new Image();
+            img.onload = function() {
+              qrCodeContainer.innerHTML = `<img src="${apiUrl}" alt="${escapeHTML(name)} QR Code" class="rounded-lg">`;
+            };
+            img.onerror = function() {
+              qrCodeContainer.innerHTML = '<p class="text-red-500 text-sm">二维码生成失败</p>';
+            };
+            img.src = apiUrl;
+          }
+
+          function closeQrModalFn() {
+            qrModal.classList.add('opacity-0', 'invisible');
+            qrModal.querySelector('.transform').classList.add('scale-95');
+            document.body.style.overflow = '';
+          }
+
+          if (document.querySelectorAll('.qr-btn').length > 0) {
+            document.querySelectorAll('.qr-btn').forEach(btn => {
+              btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const url = this.dataset.url;
+                const name = this.dataset.name;
+                openQrModal(url, name);
+              });
+            });
+          }
+
+          if (closeQrModal) closeQrModal.addEventListener('click', closeQrModalFn);
+          if (qrModal) qrModal.addEventListener('click', function(e) {
+            if (e.target === qrModal) closeQrModalFn();
+          });
+
+          if (downloadQr) downloadQr.addEventListener('click', function() {
+            const img = qrCodeContainer.querySelector('img');
+            if (img) {
+              const link = document.createElement('a');
+              link.href = img.src;
+              link.download = 'qrcode.png';
+              link.click();
+              showToast('二维码已下载', 'success');
+            }
+          });
+
+          // Toast 提示
+          function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const colors = {
+              success: 'bg-green-500',
+              error: 'bg-red-500',
+              info: 'bg-blue-500',
+              warning: 'bg-yellow-500'
+            };
+            toast.className = `toast ${colors[type]} text-white px-4 py-3 rounded-lg shadow-lg max-w-sm`;
+            toast.innerHTML = `<div class="flex items-center"><span class="flex-1">${escapeHTML(message)}</span></div>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+              toast.classList.add('hide');
+              setTimeout(() => {
+                if (container.contains(toast)) {
+                  container.removeChild(toast);
+                }
+              }, 300);
+            }, 3000);
+          }
+
+          // 帮助模态框
+          const helpModal = document.getElementById('helpModal');
+          const helpToggle = document.getElementById('helpToggle');
+          const closeHelpModal = document.getElementById('closeHelpModal');
+
+          function openHelpModal() {
+            helpModal.classList.remove('opacity-0', 'invisible');
+            helpModal.querySelector('.transform').classList.remove('scale-95');
+            document.body.style.overflow = 'hidden';
+          }
+
+          function closeHelpModalFn() {
+            helpModal.classList.add('opacity-0', 'invisible');
+            helpModal.querySelector('.transform').classList.add('scale-95');
+            document.body.style.overflow = '';
+          }
+
+          if (helpToggle) helpToggle.addEventListener('click', openHelpModal);
+          if (closeHelpModal) closeHelpModal.addEventListener('click', closeHelpModalFn);
+          if (helpModal) helpModal.addEventListener('click', function(e) {
+            if (e.target === helpModal) closeHelpModalFn();
+          });
+
+          // 快捷键支持
+          document.addEventListener('keydown', function(e) {
+            // ESC 关闭所有模态框
+            if (e.key === 'Escape') {
+              closeFavoritesModal();
+              closeHistoryModal();
+              closeQrModalFn();
+              closeHelpModalFn();
+              if (typeof closeModal === 'function') closeModal();
+            }
+
+            // 如果在输入框中，不触发快捷键
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+              return;
+            }
+
+            // / 聚焦搜索
+            if (e.key === '/') {
+              e.preventDefault();
+              const searchInput = document.getElementById('searchInput');
+              if (searchInput) {
+                searchInput.focus();
+                searchInput.select();
+              }
+            }
+
+            // T 切换主题
+            if (e.key === 't' || e.key === 'T') {
+              e.preventDefault();
+              if (themeToggle) themeToggle.click();
+            }
+
+            // F 打开收藏
+            if (e.key === 'f' || e.key === 'F') {
+              e.preventDefault();
+              if (favoritesToggle) favoritesToggle.click();
+            }
+
+            // H 打开历史
+            if (e.key === 'h' || e.key === 'H') {
+              e.preventDefault();
+              if (historyToggle) historyToggle.click();
+            }
+
+            // ? 打开帮助
+            if (e.key === '?') {
+              e.preventDefault();
+              openHelpModal();
+            }
+
+            // Home 返回顶部
+            if (e.key === 'Home') {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          });
+
+          // 批量选择功能
+          const batchActions = document.getElementById('batchActions');
+          const selectedCount = document.getElementById('selectedCount');
+          const siteCheckboxes = document.querySelectorAll('.site-checkbox');
+          const selectedSites = new Set();
+
+          siteCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+              const id = this.dataset.id;
+              if (this.checked) {
+                selectedSites.add(id);
+              } else {
+                selectedSites.delete(id);
+              }
+              updateBatchActions();
+            });
+          });
+
+          function updateBatchActions() {
+            if (selectedSites.size > 0) {
+              batchActions.classList.remove('hidden');
+              batchActions.classList.add('flex');
+              selectedCount.textContent = selectedSites.size;
+            } else {
+              batchActions.classList.add('hidden');
+              batchActions.classList.remove('flex');
+            }
+          }
+
+          // 批量复制
+          const batchCopy = document.getElementById('batchCopy');
+          if (batchCopy) {
+            batchCopy.addEventListener('click', function() {
+              const urls = [];
+              document.querySelectorAll('.site-checkbox:checked').forEach(cb => {
+                const card = cb.closest('.site-card');
+                const url = card.dataset.url;
+                if (url) urls.push(url);
+              });
+              if (urls.length > 0) {
+                navigator.clipboard.writeText(urls.join('\\n')).then(() => {
+                  showToast(`已复制 ${urls.length} 个链接`, 'success');
+                }).catch(() => {
+                  showToast('复制失败', 'error');
+                });
+              }
+            });
+          }
+
+          // 批量导出
+          const batchExport = document.getElementById('batchExport');
+          if (batchExport) {
+            batchExport.addEventListener('click', function() {
+              const sites = [];
+              document.querySelectorAll('.site-checkbox:checked').forEach(cb => {
+                const card = cb.closest('.site-card');
+                sites.push({
+                  name: card.dataset.name,
+                  url: card.dataset.url
+                });
+              });
+              if (sites.length > 0) {
+                const content = sites.map(s => `${s.name} - ${s.url}`).join('\\n');
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'bookmarks.txt';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast(`已导出 ${sites.length} 个书签`, 'success');
+              }
+            });
+          }
+
+          // 清空选择
+          const batchClear = document.getElementById('batchClear');
+          if (batchClear) {
+            batchClear.addEventListener('click', function() {
+              siteCheckboxes.forEach(cb => cb.checked = false);
+              selectedSites.clear();
+              updateBatchActions();
+            });
+          }
+
+          // 视图切换
+          const gridView = document.getElementById('gridView');
+          const listView = document.getElementById('listView');
+          if (gridView && listView) {
+            gridView.addEventListener('click', function() {
+              sitesGrid.classList.remove('grid-cols-1');
+              sitesGrid.classList.add('sm:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
+              this.classList.add('bg-primary-100', 'dark:bg-primary-900/30', 'text-primary-600', 'dark:text-primary-400');
+              this.classList.remove('hover:bg-gray-100', 'text-gray-500');
+              listView.classList.remove('bg-primary-100', 'dark:bg-primary-900/30', 'text-primary-600', 'dark:text-primary-400');
+              listView.classList.add('hover:bg-gray-100', 'dark:hover:bg-gray-700', 'text-gray-500', 'dark:text-gray-400');
+            });
+
+            listView.addEventListener('click', function() {
+              sitesGrid.classList.remove('sm:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
+              sitesGrid.classList.add('grid-cols-1');
+              this.classList.add('bg-primary-100', 'dark:bg-primary-900/30', 'text-primary-600', 'dark:text-primary-400');
+              this.classList.remove('hover:bg-gray-100', 'dark:hover:bg-gray-700', 'text-gray-500', 'dark:text-gray-400');
+              gridView.classList.remove('bg-primary-100', 'dark:bg-primary-900/30', 'text-primary-600', 'dark:text-primary-400');
+              gridView.classList.add('hover:bg-gray-100', 'text-gray-500');
+            });
+          }
+
+          // Hitokoto
+          const hitokotoText = document.getElementById('hitokotoText');
+          if (hitokotoText) {
+            fetch('https://v1.hitokoto.cn')
+              .then(response => response.json())
+              .then(data => {
+                hitokotoText.textContent = '"' + data.hitokoto + '"';
+              })
+              .catch(() => {});
+          }
+
+          // 更新可见数量
+          function updateVisibleCount() {
+            const visible = document.querySelectorAll('.site-card:not(.hidden)').length;
+            const visibleCountEl = document.getElementById('visibleCount');
+            if (visibleCountEl) {
+              visibleCountEl.textContent = visible + ' 个显示';
+            }
+          }
+
+          // 在搜索时更新可见数量
+          const searchInputEl = document.getElementById('searchInput');
+          if (searchInputEl) {
+            searchInputEl.addEventListener('input', updateVisibleCount);
+          }
+          updateVisibleCount();
+
         });
       </script>
     </body>

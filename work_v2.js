@@ -3594,7 +3594,7 @@ if (fetchFaviconBtn) {
           });
 
           // 历史记录功能
-          let history = JSON.parse(localStorage.getItem('visitHistory') || '[]');
+          let visitHistory = JSON.parse(localStorage.getItem('visitHistory') || '[]');
           const historyToggle = document.getElementById('historyToggle');
           const historyModal = document.getElementById('historyModal');
           const historyList = document.getElementById('historyList');
@@ -3602,18 +3602,18 @@ if (fetchFaviconBtn) {
           const clearHistory = document.getElementById('clearHistory');
 
           function addToHistory(id, name, url) {
-            history = history.filter(h => h.id !== id);
-            history.unshift({ id, name, url, timestamp: Date.now() });
-            history = history.slice(0, 50);
-            localStorage.setItem('visitHistory', JSON.stringify(history));
+            visitHistory = visitHistory.filter(h => h.id !== id);
+            visitHistory.unshift({ id, name, url, timestamp: Date.now() });
+            visitHistory = visitHistory.slice(0, 50);
+            localStorage.setItem('visitHistory', JSON.stringify(visitHistory));
           }
 
           function renderHistory() {
-            if (history.length === 0) {
+            if (visitHistory.length === 0) {
               historyList.innerHTML = '<p class="text-center text-gray-500 dark:text-gray-400 py-8">暂无访问记录</p>';
               return;
             }
-            historyList.innerHTML = history.map(h => {
+            historyList.innerHTML = visitHistory.map(h => {
               const date = new Date(h.timestamp).toLocaleString('zh-CN');
               return `
                 <div class="flex items-start p-3 bg-gray-50 dark:bg-gray-700 rounded-lg mb-2">
@@ -3647,8 +3647,8 @@ if (fetchFaviconBtn) {
           });
           if (clearHistory) clearHistory.addEventListener('click', function() {
             if (confirm('确定清空所有历史记录吗？')) {
-              history = [];
-              localStorage.setItem('visitHistory', JSON.stringify(history));
+              visitHistory = [];
+              localStorage.setItem('visitHistory', JSON.stringify(visitHistory));
               renderHistory();
               showToast('已清空历史记录', 'info');
             }

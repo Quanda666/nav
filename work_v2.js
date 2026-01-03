@@ -4,17 +4,13 @@ const getFavicon = async (url) => {
   try {
     let domain = new URL(url.startsWith('http') ? url : 'https://' + url).hostname;
     let faviconUrls = [
-      `https://www.faviconextractor.com/favicon/${domain}?larger=true`,
-      `https://favicon.im/${domain}?larger=true`,
       `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
       `https://${domain}/favicon.ico`,
-      
     ];
-    
+
     for (let faviconUrl of faviconUrls) {
       try {
-        let response = await fetch(faviconUrl, { 
-          cf: { cacheEverything: true },
+        let response = await fetch(faviconUrl, {
           headers: { 'User-Agent': 'Mozilla/5.0' }
         });
         if (response.ok && response.headers.get('content-type')?.startsWith('image/')) {
